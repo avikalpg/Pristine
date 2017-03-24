@@ -1,0 +1,14 @@
+
+1.Make it easier for people to segregate waste.
+	a.How hard is it to begin with? What are the confusing items? What is the right place to put composite waste products like tea bags? Is organic product in dry waste easier to treat or vice-versa?
+	b.How can we train the public to be able to classify dry/wet/hazardous waste from each other? Is it more feasible to train the public or to make a technological solution like a smart bin?
+
+2.Incentivize people to segregate waste - see how people respond to such an intervention.
+	a.To what extent do we want them to segregate their waste (minimum 2-3 categories {dry, wet and hazardous, but what is the upper limit. If they do segregate to such larger extents, then our transportation costs will also rise.)
+
+3.For just dry waste:
+	a.Automatic segregation of different types of dry-waste (based on site/nature of recycle or re-use)
+	b.Finding out the materials which are frequently disposed but do not have any recycling/re-use procedure in literature -- what can we do about it?
+		i.What can be done to them immediately? (incinerate?)
+		ii.What can be done in the long term? (laws to come up with degrade techniques to be able to start its manufacturing, or doing ad hoc research to either recycle, reuse or transform these kind of products, etc.)
+

@@ -12,3 +12,13 @@
 		i.What can be done to them immediately? (incinerate?)
 		ii.What can be done in the long term? (laws to come up with degrade techniques to be able to start its manufacturing, or doing ad hoc research to either recycle, reuse or transform these kind of products, etc.)
 
+
+=============================================================
+
+Project Ideas:
+
+1. (Credits: Vivek Seshadri) We can stick a GPS+GPRS stick to some samples of different kinds of wastes (cardboards, papers, plastic, electronic, metal, glass ... and if possible even to wet waste in some manner) and track their positions after the BBMP trucks collect them to actually analyse what happens to the waste collected by BBMP (at least from one particular area). Our current assumption is that some amount of the waste is being responsibly handled - as per the reports of the BBMP website, but most of the waste is mixed upon collection from the producers and then dumped in some nearby village.
+
+2. We can start a survey of some sort to understand how aware and how much willing to pay is a person (living in slums of bangalore) for solving his/her own waste management problems. We currently are assuming that they don't want to pay anything because their default method is zero cost, in which they just throw their waste outside their own houses. We also assume that they have little to no knowledge about how harmful is the unmanaged waste for them, their children and the earth. Such a survey should also happen for people in other walks of life.
+
+3. Smart bin technology. (Yet to do the back-ground work for this)

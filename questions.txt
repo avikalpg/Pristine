@@ -21,4 +21,6 @@ Project Ideas:
 
 2. We can start a survey of some sort to understand how aware and how much willing to pay is a person (living in slums of bangalore) for solving his/her own waste management problems. We currently are assuming that they don't want to pay anything because their default method is zero cost, in which they just throw their waste outside their own houses. We also assume that they have little to no knowledge about how harmful is the unmanaged waste for them, their children and the earth. Such a survey should also happen for people in other walks of life.
 
-3. Smart bin technology. (Yet to do the back-ground work for this)
+3. Smart bin technology. (Yet to do the back-ground work for this). We first need to figure out the whole mapping of day-to-day waste to the appropriate bin that should be used. Once this is prepared, we can work on the following projects:
+	a) Some people have already worked on and made incentive based public dustbins. One project can be to test its success.
+	b) We can work on technology to come up with a design to reduce the cost of a hybrid dustbin which has one mouth and 3 (or more) stomachs - wet, dry and hazardous, for household and public places' use.

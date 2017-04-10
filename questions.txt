@@ -17,18 +17,75 @@
 
 Project Ideas:
 
-1. (Credits: Vivek Seshadri) We can stick a GPS+GPRS stick to some samples of different kinds of wastes (cardboards, papers, plastic, electronic, metal, glass ... and if possible even to wet waste in some manner) and track their positions after the BBMP trucks collect them to actually analyse what happens to the waste collected by BBMP (at least from one particular area). Our current assumption is that some amount of the waste is being responsibly handled - as per the reports of the BBMP website, but most of the waste is mixed upon collection from the producers and then dumped in some nearby village.
+1. (Credits: Vivek Seshadri) We can stick a GPS+GPRS stick to some
+samples of different kinds of wastes (cardboards, papers, plastic,
+electronic, metal, glass ... and if possible even to wet waste in some
+manner) and track their positions after the BBMP trucks collect them
+to actually analyse what happens to the waste collected by BBMP (at
+least from one particular area). Our current assumption is that some
+amount of the waste is being responsibly handled - as per the reports
+of the BBMP website, but most of the waste is mixed upon collection
+from the producers and then dumped in some nearby village.
 
-2. We can start a survey of some sort to understand how aware and how much willing to pay is a person (living in slums of bangalore) for solving his/her own waste management problems. We currently are assuming that they don't want to pay anything because their default method is zero cost, in which they just throw their waste outside their own houses. We also assume that they have little to no knowledge about how harmful is the unmanaged waste for them, their children and the earth. Such a survey should also happen for people in other walks of life.
+2. We can start a survey of some sort to understand how aware and how
+much willing to pay is a person (living in slums of bangalore) for
+solving his/her own waste management problems. We currently are
+assuming that they don't want to pay anything because their default
+method is zero cost, in which they just throw their waste outside
+their own houses. We also assume that they have little to no knowledge
+about how harmful is the unmanaged waste for them, their children and
+the earth. Such a survey should also happen for people in other walks
+of life.
 
-3. Smart bin technology. (Yet to do the back-ground work for this). We first need to figure out the whole mapping of day-to-day waste to the appropriate bin that should be used. Once this is prepared, we can work on the following projects:
-	a) Some people have already worked on and made incentive based public dustbins. One project can be to test its success.
-	b) We can work on technology to come up with a design to reduce the cost of a hybrid dustbin which has one mouth and 3 (or more) stomachs - wet, dry and hazardous, for household and public places' use.
+3. Smart bin technology. (Yet to do the back-ground work for this). We
+first need to figure out the whole mapping of day-to-day waste to the
+appropriate bin that should be used. Once this is prepared, we can
+work on the following projects:
 
-4. In a pilot for households in a particular area - for example Koramangala or Seshadripuram or Shantinagar - where we incentivize people to give us all their waste and they will get something in return, we can monitor the amount and nature of waste that we get from each household to understand:
-	a) Whether the household was already holding on to a lot of recyclable waste just in the hope of being able to dispose it off responsibly (like the case of Vivek). This can be seen as a spike in the amount of dry waste in the beginning of the period of pilot.
-	b) Whether these households are getting motivated to not throw waste where they generate, and instead bring the waste back home to add to their own dustbins. This can be seen as a gradual increase in the amount of dry waste, or a gradual increase in the rate at which the amount of dry waste increases (to account for the fact that their consumption is anyway either increasing or decreasing due to various other reasons).
-	c) What is the appropriate frequency at which wet waste should be collected.
+     	a) Some people have already worked on and made incentive based
+     	public dustbins. One project can be to test its success.
+	
+	b) We can work on technology to come up with a design to
+	reduce the cost of a hybrid dustbin which has one mouth and 3
+	(or more) stomachs - wet, dry and hazardous, for household and
+	public places' use.
+
+3'. Modified q3
+
+a) What is the best way of handling wet waste?
+composing/bio-fuel/something else?
+
+b) What level of segregation is ideal for dry waste?
+
+c) How to handle hazardous waste?
+
+Design of a large trash can that can installed in a local house-hold.
+	
+
+4. In a pilot for households in a particular area - for example
+Koramangala or Seshadripuram or Shantinagar - where we incentivize
+people to give us all their waste and they will get something in
+return, we can monitor the amount and nature of waste that we get from
+each household to understand:
+
+	a) Whether the household was already holding on to a lot of
+	recyclable waste just in the hope of being able to dispose it
+	off responsibly (like the case of Vivek). This can be seen as
+	a spike in the amount of dry waste in the beginning of the
+	period of pilot.
+	
+	b) Whether these households are getting motivated to not throw
+	waste where they generate, and instead bring the waste back
+	home to add to their own dustbins. This can be seen as a
+	gradual increase in the amount of dry waste, or a gradual
+	increase in the rate at which the amount of dry waste
+	increases (to account for the fact that their consumption is
+	anyway either increasing or decreasing due to various other
+	reasons).
+	
+	c) What is the appropriate frequency at which wet waste should
+	be collected.
+	
 
 ==============================================================
 

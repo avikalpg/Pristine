@@ -69,7 +69,19 @@ walks of life.
 
 ================================================================================
 
-4. Understanding how people respond to interventions
+4. Crowd-sourcing community cleanliness (based on Jay Chen's paper)
+
+** Why:
+
+There are a lot of people who all value community cleanliness to different extents, and hence are ready to pay different amounts for the same. There are also a lot of people who are ready to work on community cleanliness, but do not have enough incentives (mode of payment) to do so. If for any area, we can crowd-source the payment of the cleaners, we can create a marketplace for this demand and supply.
+
+** How:
+
+Bill and Sudheesh are already working on a project called "the 3rd world", and they were trying to work alongside "The Ugly Indian" to implement payments for cleaners by philanthropists who can see these cleaners in actions. But in the case of the Ugly Indian, these cleaners are actually volunteers who really have other jobs and sources of income, and do not need the money. Instead, we can use the same platform to connect these philanthropist to cleaners who can clean these areas for money. In fact, we don't even need to rely on philanthropists. The worker can just record a video of him/herself cleaning, and the local community can pay for the job in a crowd-sourced fashion.
+
+================================================================================
+
+5. Understanding how people respond to interventions
 
 ** How:
 
@@ -105,7 +117,7 @@ collected.
 
 ================================================================================
 	
-5. Smart bin technology. (Yet to do the back-ground work for this). We
+6. Smart bin technology. (Yet to do the back-ground work for this). We
 first need to figure out the whole mapping of day-to-day waste to the
 appropriate bin that should be used. Once this is prepared, we can
 work on the following projects:

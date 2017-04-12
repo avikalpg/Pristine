@@ -18,7 +18,7 @@ We can stick a GPS+GPRS stick to some samples of different kinds of wastes
 (cardboards, papers, plastic, electronic, metal, glass ... and if possible even
 to wet waste in some manner) and track their positions after the BBMP trucks
 collect them.
-
+( Get in touch with somebody higher up in BBMP before undergoing the actual tracking. Alternate: A day in life of BBMP truck probably by following it.)
 ================================================================================
 
 2. Understanding what is the least a citizen should do with his/her waste. 
@@ -45,6 +45,7 @@ We decide an overall dimension of the bin based on weekly garbage production of
 a general house, and make partitions on the basis of the answers to the above
 questions and the general composition of the waste produced.
 
+( Low involvement activity, best things to manage all the boundry cases. )
 ================================================================================
 
 3. Understanding the mindset of the people
@@ -78,6 +79,8 @@ There are a lot of people who all value community cleanliness to different exten
 ** How:
 
 Bill and Sudheesh are already working on a project called "the 3rd world", and they were trying to work alongside "The Ugly Indian" to implement payments for cleaners by philanthropists who can see these cleaners in actions. But in the case of the Ugly Indian, these cleaners are actually volunteers who really have other jobs and sources of income, and do not need the money. Instead, we can use the same platform to connect these philanthropist to cleaners who can clean these areas for money. In fact, we don't even need to rely on philanthropists. The worker can just record a video of him/herself cleaning, and the local community can pay for the job in a crowd-sourced fashion.
+
+( getting people on platform and scaling , crowd mobilization, threshold for activation, Research question and Novelty to be well defined.)
 
 ================================================================================
 

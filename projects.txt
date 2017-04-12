@@ -73,7 +73,7 @@ walks of life.
 
 ** Why:
 
-There are a lot of people who all value community cleanliness to different extents, and hence are ready to pay different amounts for the same. There are also a lot of people who are ready to work on community cleanliness, but do not have enough incentives (mode of payment) to do so. If for any area, we can crowd-source the payment of the cleaners, we can create a marketplace for this demand and supply.
+There are a lot of people who all value community cleanliness to different extents, and hence are ready to pay different amounts for the same. There are also a lot of people who are ready to work on community cleanliness, but do not have enough incentives (mode of payment) to do so. If for any area, we can crowd-source the payment of the cleaners, we can create a marketplace for this demand and supply. The entire system to have a two thronged approach : collect residents who are voluntarily willing to contribute towards cleaning communal trash and organize waste pickers to communicate and negociate work/prices for a job.
 
 ** How:
 

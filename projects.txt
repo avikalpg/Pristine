@@ -134,3 +134,5 @@ work on the following projects:
 ==============================================================
 
 We also have to find out mechanisms of testing how answering any of the projects above and completing any of the projects above solve our problem of city cleaning. We have to come up with metrics to measure impact and methods of measuring these metrics.
+
+- what is the interesting ressearch question to answer.

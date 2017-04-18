@@ -18,7 +18,9 @@ We can stick a GPS+GPRS stick to some samples of different kinds of wastes
 (cardboards, papers, plastic, electronic, metal, glass ... and if possible even
 to wet waste in some manner) and track their positions after the BBMP trucks
 collect them.
-( Get in touch with somebody higher up in BBMP before undergoing the actual tracking. Alternate: A day in life of BBMP truck probably by following it.)
+
+( Get in touch with somebody higher up in BBMP before undergoing the actual
+tracking. Alternate: A day in life of BBMP truck probably by following it.)
 ================================================================================
 
 2. Understanding what is the least a citizen should do with his/her waste. 

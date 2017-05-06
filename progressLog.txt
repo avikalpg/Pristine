@@ -1,0 +1,11 @@
+# The purpose of this text document is to keep a time track of the progress of the project
+
+* 7th May, 2017
+
+This document was started. The report has been mostly prepared, with details about some projects left to be filled. Some projects, as listed in the file projects.txt have been discussed with Bill and Indrani Medhi Thies. The team has decided to start working on a project which exposes the truth of the Status Quo. So we have decided to track waste items - description present in ideas folder, in a file called BBMP_survey_Project_WriteUp.
+
+We have been doing some searching online for getting a cheap GPS+GPRS device for tracking the coordinates of waste items we dispose. We have failed to find options cheaper than Rs. 1000/- that can be delivered in India. So today, I and Apurv went to a local Electronics market on SP Road but could only find options costing around Rs. 1700/-. The popular shops that provided these options were Vishal Electronics and Om Electronics. 
+
+We also got contact of another store called Bluetronics, which we have contacted through email, providing our requirements.
+
+---------------------------------------------------------------------

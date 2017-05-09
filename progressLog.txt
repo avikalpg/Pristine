@@ -9,3 +9,11 @@ We have been doing some searching online for getting a cheap GPS+GPRS device for
 We also got contact of another store called Bluetronics, which we have contacted through email, providing our requirements.
 
 ---------------------------------------------------------------------
+
+* 9th May, 2017
+
+In a discussion with Sambhav Satija (on 8th May), we realised that we can do away with the GPS component (priced at least 800 rupees) and just use the cell information from the GSM component to retrieve the approximate location of the device - expected error ~200 meters. We also discussed an even cheaper method which requires collaboration with BBMP, in which we can use radio beacons which can transmit radio signals to around 1-2 km. A GPS+GPRS device can be attached to all of the BBMP trucks and other picking vehicles and more accurate data can be fetched.
+
+I and Apurv pitched Sambhav's ideas to Vivek and we have decided to go on with it. By today evening, I created an app which can list down the signal strengths along with the cell IDs and LACs of all the towers it can sense. The next step is to setup a server which can receive either SMS or HTTP packets from this app and track its location without using GPS.
+
+---------------------------------------------------------------------

@@ -3,21 +3,16 @@ package com.example.t_avgup.gsm_location_testing_app;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.telephony.CellIdentityGsm;
 import android.telephony.CellIdentityLte;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
-import android.telephony.CellLocation;
 import android.telephony.CellSignalStrengthGsm;
 import android.telephony.CellSignalStrengthLte;
 import android.telephony.NeighboringCellInfo;
@@ -28,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -40,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView t = (TextView)findViewById(R.id.outputView);
-        TextView t2 = (TextView)findViewById(R.id.textView2);
+        TextView t = (TextView) findViewById(R.id.outputView);
+        TextView t2 = (TextView) findViewById(R.id.textView2);
 
         TelephonyManager telephonyManager = ((TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE));
         String operatorName = telephonyManager.getNetworkOperatorName();
@@ -86,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // credits: http://stackoverflow.com/questions/23710045/android-location-using-cell-tower
-        GsmCellLocation cellLocation = (GsmCellLocation)telephonyManager.getCellLocation();
+        GsmCellLocation cellLocation = (GsmCellLocation) telephonyManager.getCellLocation();
         int cellId = cellLocation.getCid();
         int cellLac = cellLocation.getLac();
 
@@ -106,17 +100,18 @@ public class MainActivity extends AppCompatActivity {
                     cellList.put(cellObj);
                 } catch (Exception e) {
                     Log.d("Old Version Cell Info", "The App has detected an old version for the phone. This version has not been tested. Error in extracting cell data");
-                    Toast.makeText(this, "Old Version: Error in Cell information retrieval", Toast.LENGTH_SHORT).show();;
+                    Toast.makeText(this, "Old Version: Error in Cell information retrieval", Toast.LENGTH_SHORT).show();
+                    ;
                 }
             }
 
         } else {
             List<CellInfo> infos = telephonyManager.getAllCellInfo();
-            for (int i = 0; i<infos.size(); ++i) {
+            for (int i = 0; i < infos.size(); ++i) {
                 try {
                     JSONObject cellObj = new JSONObject();
                     CellInfo info = infos.get(i);
-                    if (info instanceof CellInfoGsm){
+                    if (info instanceof CellInfoGsm) {
                         phoneType = phoneType + "GSM";
                         CellSignalStrengthGsm gsm = ((CellInfoGsm) info).getCellSignalStrength();
                         CellIdentityGsm identityGsm = ((CellInfoGsm) info).getCellIdentity();
@@ -137,15 +132,16 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception ex) {
 
                     Log.d("Cell Info", "Error in extracting cell data");
-                    Toast.makeText(this, "Error in Cell information retrieval", Toast.LENGTH_SHORT).show();;
+                    Toast.makeText(this, "Error in Cell information retrieval", Toast.LENGTH_SHORT).show();
+                    ;
                 }
             }
         }
 
-        t2.setText( cellList.toString() );
+        t2.setText(cellList.toString());
 
         Log.d("CellLocation", cellLocation.toString());
-        Log.d("GSM CELL ID",  String.valueOf(cellId));
+        Log.d("GSM CELL ID", String.valueOf(cellId));
         Log.d("GSM Location Code", String.valueOf(cellLac));
 
 
@@ -156,6 +152,6 @@ public class MainActivity extends AppCompatActivity {
 
         String out = "Operator Name: " + operatorName + "\nNetwork Type: " + networkType + "\nMCC: " + mcc + "\nMNC: " + mnc + "\nPhone Type: " + phoneType + "\nCID: " + cellId + "\nLAC: " + cellLac + "\n" + cellLocation.toString();
 
-        t.setText( out );
+        t.setText(out);
     }
 }

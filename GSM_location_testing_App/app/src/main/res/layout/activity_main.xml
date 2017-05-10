@@ -10,21 +10,21 @@
     tools:context="com.example.t_avgup.gsm_location_testing_app.MainActivity">
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/textView2" />
+        android:text="Hello World!" />
 
     <TextView
+        android:id="@+id/outputView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Required information will appear here"
-        android:id="@+id/outputView"
-        android:layout_below="@+id/textView2"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="40dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="40dp"
+        android:text="Required information will appear here"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 </RelativeLayout>

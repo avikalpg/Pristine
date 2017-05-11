@@ -10,7 +10,12 @@ class RawInfo(models.Model):
     TimeStamp = models.DateTimeField()
     cellID = models.CharField(max_length=10)
     LAC = models.CharField(max_length=10)
+    MCC = models.CharField(max_length=5)
+    MNC = models.CharField(max_length=5)
     dBm = models.FloatField(null=True)
+
+    def __str__(self):
+        return "device: %s, CID: %s, LAC: %s, MCC: %s, MNC: %s, Time: " % (self.deviceID, self.cellID, self.LAC, self.MCC, self.MNC) + str(self.TimeStamp)
 
 
 class TrackingInfo(models.Model):

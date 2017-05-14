@@ -1,0 +1,9 @@
+{% if tracking_points_list %}
+    <ul>
+    {% for point in tracking_points_list %}
+        <li>Cell Id: {{ point.deviceID }} -- Lat: {{ point.Lat }} and Long: {{ point.Long }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Sorry we do not have any tracked points to display</p>
+{% endif %}

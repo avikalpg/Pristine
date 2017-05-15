@@ -27,13 +27,18 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpClientStack;
+import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.CookieStore;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -116,28 +121,43 @@ public class MainActivity extends AppCompatActivity {
         return cellList;
     }
 
-    private void sendHTTPRequest() {
+    private void sendHTTPRequest(final String deviceID, final String mcc, final String mnc, final JSONArray cellInfo) {
 
         final TextView mTextView = (TextView) findViewById(R.id.responseTextBox);
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://www.google.com";
+        String url ="http://192.168.43.150:8000/receiveCellInfo/location";
 
-// Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ext = "?device=" + deviceID + "&time=" + tsLong.toString() + "&mcc=" + mcc + "&mnc=" + mnc + "&cellinfo=" + cellInfo;
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url + ext,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
-                        mTextView.setText("Response is: "+ response.substring(0,500));
+                        mTextView.setText("Response is: "+ response.substring(0, java.lang.Math.min(500, response.length())));
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 mTextView.setText("That didn't work!");
             }
-        });
+        }){
+//                @Override
+//                protected Map<String, String> getParams() {
+//                    Map<String, String> params = new HashMap<>();
+//                    params.put("device", deviceID);
+//                    Long tsLong = System.currentTimeMillis()/1000;
+//                    params.put("time", tsLong.toString());
+//                    params.put("mcc", mcc);
+//                    params.put("mnc", mnc);
+//                    params.put("cellinfo", cellInfo.toString());
+//                    return params;
+//                }
+        };
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
@@ -182,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         assert t != null;
         t.setText(cellList.toString());
 
-        sendHTTPRequest();
+        sendHTTPRequest("G00001", mcc, mnc, cellList);
 
     }
 

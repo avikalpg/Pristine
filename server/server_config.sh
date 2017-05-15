@@ -2,7 +2,7 @@
 # sudo apt-get install python3
 #may be code to install pip
 
-pip install virtualenv
+sudo pip install virtualenv
 mkdir ENV_01
 virtualenv ENV_01
 cd ENV_01/

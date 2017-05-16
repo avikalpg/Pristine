@@ -13,6 +13,7 @@ from .models import RawInfo, TrackingInfo
 import sys
 sys.path.insert(0, '../../library/')
 from  towertLocation import getTowerLocation
+import json
 
 def index(request):
     tracking_points_list = TrackingInfo.objects.order_by('-TimeStamp')
@@ -26,6 +27,20 @@ def index(request):
     #return HttpResponse(template.render(context, request))
     return render(request, 'receiveCellInfo/index.html', context)
 
+def getLocation( cellInfo ):
+    # The purpose of this function is to provide you with a GPS location for the device with some error
+    test_string = ""
+    for cell in cellInfo:
+        if "lac" in cell.keys():
+            test_string += "\nGSM :"
+            (Lat, Long) = getTowerLocation()
+            test_string += "Lat: " + str(Lat) + "; Long: " + str(Long)
+        elif "tac" in cell.keys():
+            test_string += "\nLTE :"
+        else:
+            test_string += "\nERROR: neither GSM not LTE cell tower information"
+    return test_string
+
 def listener(request):
     CID = "5011"
     LAC = "15001"
@@ -35,20 +50,24 @@ def listener(request):
     Long = 1.00
 
     try:
-        device = request.POST['device']
-        time_stamp = request.POST['time']
-        CID = request.POST['cid']
-        LAC = request.POST['lac']
-        MCC = request.POST['mcc']
-        MNC = request.POST['mnc']
-        strength = request.POST['dBm']
+#        device = request.POST['device']
+#        time_stamp = request.POST['time']
+#        CellInfo = request.POST['cellinfo']
+#        MCC = request.POST['mcc']
+#        MNC = request.POST['mnc']
+        device = request.GET['device']
+        time_stamp = request.GET['time']
+        cellInfo = request.GET['cellinfo']
+        MCC = request.GET['mcc']
+        MNC = request.GET['mnc']
     except (KeyError):
         return render(request, 'receiveCellInfo/listener.html', {
             'message': "Invalid Raw Information entry requested!"
         })
     else:
-        (Lat, Long) = getTowerLocation()
-        return HttpResponse( str(Lat) + "The location of this cell tower (CID: %s, LAC: %s) is Lat: %f, Long: %f " % (CID, LAC, Lat, Long) + "<br>Device ID: " + device + "<br>time-stamp: " + time_stamp)
+        cellInfo = json.loads(cellInfo)
+        testString = getLocation(cellInfo)
+        return HttpResponse( testString + "\n" + str(len(cellInfo)) + " sets of cell tower information has been received for device ID: " + device + "<br>time-stamp: " + time_stamp)
 
 def track(request, device_id):
     #trackedInfo = "<br>coming up"

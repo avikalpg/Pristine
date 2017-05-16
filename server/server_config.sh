@@ -8,7 +8,7 @@ virtualenv ENV_01
 cd ENV_01/
 source bin/activate
 pip install Django
-# install requess
+pip install requests
 pip install beautifulsoup4
 python -m django --version
 cd ..

@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.shortcuts import render
 
 # Create your views here.
 
 from django.http import HttpResponse, Http404
-#from django.template import loader
 from django.shortcuts import render, get_object_or_404
+#from django.template import loader
 
 from .models import RawInfo, TrackingInfo
+
+import sys
+sys.path.insert(0, '../../library/')
+from  towertLocation import getTowerLocation
 
 def index(request):
     tracking_points_list = TrackingInfo.objects.order_by('-TimeStamp')
@@ -44,7 +47,8 @@ def listener(request):
             'message': "Invalid Raw Information entry requested!"
         })
     else:
-        return HttpResponse("The location of this cell tower (CID: %s, LAC: %s) is Lat: %f, Long: %f " % (CID, LAC, Lat, Long) + "<br>Device ID: " + device + "<br>time-stamp: " + time_stamp)
+        (Lat, Long) = getTowerLocation()
+        return HttpResponse( str(Lat) + "The location of this cell tower (CID: %s, LAC: %s) is Lat: %f, Long: %f " % (CID, LAC, Lat, Long) + "<br>Device ID: " + device + "<br>time-stamp: " + time_stamp)
 
 def track(request, device_id):
     #trackedInfo = "<br>coming up"

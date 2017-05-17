@@ -1,0 +1,9 @@
+{% if raw_info %}
+    <ul>
+    {% for point in raw_info %}
+        <li>Cell Id: {{ point.deviceID }} -- cellId: {{ point.cellID }} and LAC: {{ point.LAC }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Sorry we do not have any tracked points to display</p>
+{% endif %}

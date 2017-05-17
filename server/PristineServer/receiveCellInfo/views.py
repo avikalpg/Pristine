@@ -64,7 +64,7 @@ def listener(request):
                 test_string += "\nLTE :"
             else:
                 test_string += "\nERROR: neither GSM not LTE cell tower information"
-        #testString = getLocation(cellInfo, MNC, MCC)
+        #testString = getLocation(cell, MNC, MCC)
         return HttpResponse( str(len(cellInfo)) + " sets of cell tower information has been received for device ID: " + device + "<br>time-stamp: " + time_stamp + test_string)
 
 def track(request, device_id):
@@ -76,12 +76,43 @@ def track(request, device_id):
     return render( request, 'receiveCellInfo/track.html', context)
 
 def raw_info(request):
-    raw_info = RawInfo.objects.order_by('-TimeStamp')
+    raw_info = RawInfo.objects.order_by('TimeStamp')
     context = {
         'raw_info' : raw_info,
     }
-    return render(request, 'receiveCellInfo/index.html', context)
-    
+    return render(request, 'receiveCellInfo/rawinfo.html', context)
+
+from django.db.models import Count
+
+def evaluateLocations(request):
+    raw_info = RawInfo.objects.values('TimeStamp').annotate(dcount=Count('TimeStamp'))
+    print raw_info[0], type(raw_info)
+    for time in raw_info:
+        singleInfo = RawInfo.objects.filter(TimeStamp = time['TimeStamp'])
+        referencePoint = []
+        for info in singleInfo:
+            (Lat, Long) = getTowerLocation(info.MCC, info.MNC, info.LAC, info.cellID, source = "Google")
+            print ">>", Lat, " : ", Long
+            referencePoint.append((Lat, Long, info.dBm))
+        print referencePoint
+        (Lat, Long) = spotDevice( referencePoint )
+        break
+        # TODO: Remove the above break command. 
+        # TODO: Maintain the uniqueness of (deviceID, timeStamp)
+        #newTrackingInfo = TrackingInfo(
+        #    deviceID = info.deviceID,
+        #    TimeStamp = info.TimeStamp,
+        #    Lat = Lat,
+        #    Long = Long,
+        #)
+        #newTrackingInfo.save()
+
+    singleReading = None
+    context = { 
+        'raw_info' : raw_info, 
+        'singleTimeStamp' : singleReading,
+    }
+    return render(request, 'receiveCellInfo/evaluateLocations.html', context)
 
 #######################################################################################
 #######################################################################################
@@ -179,3 +210,9 @@ def getLocation( cellInfo, mnc, mcc ):
             test_string += "\nERROR: neither GSM not LTE cell tower information"
     return test_string
 
+def spotDevice( referencePoints ):
+    print referencePoints
+    #TODO: calculate the position of the device using the dbm data 
+    Lat = 12.967199
+    Long = 77.595194
+    return (Lat, Long)

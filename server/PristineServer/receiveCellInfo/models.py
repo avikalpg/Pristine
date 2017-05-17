@@ -10,8 +10,8 @@ class RawInfo(models.Model):
     TimeStamp = models.DateTimeField()
     cellID = models.CharField(max_length=10)
     LAC = models.CharField(max_length=10)
-    MCC = models.CharField(max_length=5)
-    MNC = models.CharField(max_length=5)
+    MCC = models.CharField(max_length=5, default="")
+    MNC = models.CharField(max_length=5, default="")
     dBm = models.FloatField(null=True)
 
     def __str__(self):

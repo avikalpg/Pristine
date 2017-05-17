@@ -1,0 +1,9 @@
+{% if raw_info %}
+    <ul>
+    {% for point in raw_info %}
+        <li><b>{{ point.TimeStamp}}: </b> count: {{ point.dcount }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Sorry we do not have any tracked points to display</p>
+{% endif %}

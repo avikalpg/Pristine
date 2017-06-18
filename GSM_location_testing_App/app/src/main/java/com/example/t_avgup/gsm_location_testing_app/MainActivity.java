@@ -42,7 +42,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private JSONArray retrieveCellInfo(TelephonyManager telephonyManager) {
+    private JSONArray retrieveCellInfo(TelephonyManager telephonyManager)   {
         JSONArray cellList = new JSONArray();
 
         // Obtaining permission to get Cell data

@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">GSM_location_testing_App</string>
+    <string name="title_activity_smstracking">SMSTrackingActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="SMS_tracking_intro">Press the start button to start sending messages to the tracking phone number</string>
+    <string name="startButton">Start Tracking</string>
+    <string name="stopButton">Stop Tracking</string>
 </resources>

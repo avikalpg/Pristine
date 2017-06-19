@@ -2,19 +2,19 @@ package com.example.t_avgup.gsm_location_testing_app;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContentResolverCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,14 +28,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SMSTrackingActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    // Global Variables:
+    TrackingDatabase dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +72,14 @@ public class SMSTrackingActivity extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_SMS}, 1);
-
-            // TODO: Remove this code segment after testing reading inbox
         }
 
+        dbHelper = new TrackingDatabase(SMSTrackingActivity.this);
+
+        // TODO: Remove this code segment after testing reading inbox
         readMessages();
+
+
     }
 
     @Override
@@ -136,6 +139,12 @@ public class SMSTrackingActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        dbHelper.close();
+        super.onDestroy();
+    }
+
     // App Functionality begins here
 
     public void startTracking(View view){
@@ -188,7 +197,7 @@ public class SMSTrackingActivity extends AppCompatActivity
         ContentResolver contentResolver = getContentResolver();
 //        Cursor cursor = contentResolver.query(Uri.parse( "content://sms/inbox" ), null, null, null, null);
 
-        String[] smsNo = new String[] { "9580264736" };
+        String smsNo = "9580264736";
         // cursor
         Cursor cursor = contentResolver.query( Uri.parse("content://sms/inbox" ), null, null, null, null);
 
@@ -197,25 +206,80 @@ public class SMSTrackingActivity extends AppCompatActivity
         }
         logContent += "\n";
         log.setText(logContent);
-        Context context = getApplicationContext();
+//        Context context = getApplicationContext();
         int indexBody = cursor.getColumnIndex("body");
         int indexAddr = cursor.getColumnIndex("address");
         int date = cursor.getColumnIndex("date");
 
         if ( indexBody < 0 || !cursor.moveToFirst() ) return;
         do {
-            if (cursor.getString(indexAddr).contains("9580264736") ) {
+            if (cursor.getString(indexAddr).contains(smsNo) ) {
 //                String str = "Sender: " + cursor.getString(indexAddr) + "\n" + cursor.getString(indexBody);
                 String body = cursor.getString(indexBody);
                 String str = "";
                 if (body.contains("cellid")){
                     Map<String, String> info = parseMessageBody(body);
-                    str += cursor.getString(date) + " :: " + info.toString();
+
+                    SQLiteDatabase sqlDb = dbHelper.getWritableDatabase();
+
+                    ContentValues values = new ContentValues();
+                    values.put(DatabaseContract.CellIdStream.COL_TRACK_ID, "dummy01");
+                    values.put(DatabaseContract.CellIdStream.COL_TIMESTAMP, Long.parseLong(cursor.getString(date), 10));
+                    values.put(DatabaseContract.CellIdStream.COL_MCC, info.get("mcc"));
+                    values.put(DatabaseContract.CellIdStream.COL_MNC, info.get("mnc"));
+                    values.put(DatabaseContract.CellIdStream.COL_LAC, info.get("lac"));
+                    values.put(DatabaseContract.CellIdStream.COL_CELL_ID, info.get("cellid"));
+                    // Insert the new row, returning the primary key value of the new row
+                    long newRowId = sqlDb.insert(DatabaseContract.CellIdStream.TABLE_NAME, null, values);
+                    str += Long.toString(newRowId) + "th entry -> " + cursor.getString(date) + " :: " + info.toString();
+
+                    sqlDb.close();
                 }
                 logContent += str + "\n";
             }
         }
         while( cursor.moveToNext() );
+        cursor.close();
+
+        SQLiteDatabase sqlDB = dbHelper.getReadableDatabase();
+        // Define a projection that specifies which columns from the database you will actually use after this query.
+        String[] projection = {
+                DatabaseContract.CellIdStream._ID,
+                DatabaseContract.CellIdStream.COL_TIMESTAMP,
+                DatabaseContract.CellIdStream.COL_TRACK_ID,
+                DatabaseContract.CellIdStream.COL_LAC,
+                DatabaseContract.CellIdStream.COL_CELL_ID
+        };
+
+        // Filter results WHERE "title" = 'My Title'
+        String selection = DatabaseContract.CellIdStream.COL_MCC + " = ?";
+        String[] selectionArgs = { "405" };
+
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder =
+                DatabaseContract.CellIdStream.COL_TIMESTAMP + " DESC";
+
+        Cursor cursor2 = sqlDB.query(
+                DatabaseContract.CellIdStream.TABLE_NAME, // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder                                 // The sort order
+        );
+
+        logContent += "\n---------------------------------------\nOUTPUT FROM THE DATABASE READ:\n";
+        while (cursor2.moveToNext()) {
+            long ts = cursor2.getLong(cursor2.getColumnIndexOrThrow(DatabaseContract.CellIdStream.COL_TIMESTAMP));
+            String lac = cursor2.getString(cursor2.getColumnIndexOrThrow(DatabaseContract.CellIdStream.COL_LAC));
+            String cellid = cursor2.getString(cursor2.getColumnIndexOrThrow(DatabaseContract.CellIdStream.COL_CELL_ID));
+            logContent += "time:" + Long.toString(ts) + " LAC:" + lac + " Cell ID:" + cellid + "\n";
+        }
+
+        cursor2.close();
+        sqlDB.close();
+
         log.setText(logContent);
     }
 }

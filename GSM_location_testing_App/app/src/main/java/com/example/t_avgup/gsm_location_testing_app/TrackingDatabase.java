@@ -28,7 +28,8 @@ public class TrackingDatabase extends SQLiteOpenHelper {
                     DatabaseContract.TrackingInfo.COL_TRACK_ID + " TINYTEXT," +
                     DatabaseContract.TrackingInfo.COL_TIMESTAMP + " BIGINT," +
                     DatabaseContract.TrackingInfo.COL_LAT + " FLOAT," +
-                    DatabaseContract.TrackingInfo.COL_LONG + " FLOAT )";
+                    DatabaseContract.TrackingInfo.COL_LONG + " FLOAT," +
+                    DatabaseContract.TrackingInfo.COL_ACCURACY + " FLOAT )";
 
     private static final String SQL_DELETE_TRACKING_INFO =
             "DROP TABLE IF EXISTS " + DatabaseContract.TrackingInfo.TABLE_NAME;

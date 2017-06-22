@@ -12,9 +12,11 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,7 +29,20 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -186,6 +201,168 @@ public class SMSTrackingActivity extends AppCompatActivity
         return output;
     }
 
+    private long saveCellId (String track_id, String timestamp, String mcc, String mnc, String lac, String cell_id) {
+
+        SQLiteDatabase sqlDb = dbHelper.getWritableDatabase();
+
+        // Check whether this entry already exists in the database
+        String[] projection = {
+                DatabaseContract.CellIdStream._ID,
+                DatabaseContract.CellIdStream.COL_TIMESTAMP,
+                DatabaseContract.CellIdStream.COL_TRACK_ID,
+                DatabaseContract.CellIdStream.COL_LAC,
+                DatabaseContract.CellIdStream.COL_CELL_ID
+        };
+
+        String selection = DatabaseContract.CellIdStream.COL_TIMESTAMP + " = ? AND " + DatabaseContract.CellIdStream.COL_TRACK_ID + " = ? AND " +
+                DatabaseContract.CellIdStream.COL_LAC + " = ? AND " + DatabaseContract.CellIdStream.COL_CELL_ID + " = ?";
+        String[] selectionArgs = { timestamp, track_id, lac, cell_id };
+
+        String sortOrder =
+                DatabaseContract.CellIdStream.COL_TIMESTAMP + " DESC";
+
+        Cursor cursor = sqlDb.query(
+                DatabaseContract.CellIdStream.TABLE_NAME, // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder                                 // The sort order
+        );
+
+        if (cursor.getColumnCount() > 0) {
+            Log.d("saveCellId", "Data point already exists in the database:\n" +
+                    track_id + ", " + timestamp + ", " + mcc + ":" + mnc + ":" + lac + ":" + cell_id);
+            return -1;
+        }
+        cursor.close();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.CellIdStream.COL_TRACK_ID, track_id);
+        values.put(DatabaseContract.CellIdStream.COL_TIMESTAMP, Long.parseLong(timestamp, 10));
+        values.put(DatabaseContract.CellIdStream.COL_MCC, mcc);
+        values.put(DatabaseContract.CellIdStream.COL_MNC, mnc);
+        values.put(DatabaseContract.CellIdStream.COL_LAC, lac);
+        values.put(DatabaseContract.CellIdStream.COL_CELL_ID, cell_id);
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = sqlDb.insert(DatabaseContract.CellIdStream.TABLE_NAME, null, values);
+
+        sqlDb.close();
+
+        getLatLong(mcc, mnc, lac, cell_id, track_id, Long.parseLong(timestamp, 10));
+
+        return newRowId;
+    }
+
+    private long saveLatLong (String track_id, long timestamp, Float Lat, Float Long, Float accuracy) {
+
+        SQLiteDatabase sqlDb = dbHelper.getWritableDatabase();
+
+        // Check whether this entry already exists in the database
+        String[] projection = {
+                DatabaseContract.TrackingInfo._ID,
+                DatabaseContract.TrackingInfo.COL_TRACK_ID,
+                DatabaseContract.TrackingInfo.COL_TIMESTAMP,
+                DatabaseContract.TrackingInfo.COL_LAT,
+                DatabaseContract.TrackingInfo.COL_LONG,
+                DatabaseContract.TrackingInfo.COL_ACCURACY
+        };
+
+        String selection = DatabaseContract.TrackingInfo.COL_TIMESTAMP + " = ? AND " + DatabaseContract.TrackingInfo.COL_TRACK_ID + " = ? AND " +
+                DatabaseContract.TrackingInfo.COL_LAT + " = ? AND " + DatabaseContract.TrackingInfo.COL_LONG + " = ?";
+        String[] selectionArgs = { String.valueOf(timestamp), track_id, Lat.toString(), Long.toString() };
+
+        String sortOrder =
+                DatabaseContract.CellIdStream.COL_TIMESTAMP + " DESC";
+
+        Cursor cursor = sqlDb.query(
+                DatabaseContract.CellIdStream.TABLE_NAME, // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder                                 // The sort order
+        );
+
+        if (cursor.getColumnCount() > 0) {
+            Log.d("saveCellId", "Lat-Long point already exists in database:\n" +
+                    track_id + ", " + timestamp + ", " + Lat + ":" + Long );
+            return -1;
+        }
+        cursor.close();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.TrackingInfo.COL_TRACK_ID, track_id);
+        values.put(DatabaseContract.TrackingInfo.COL_TIMESTAMP, timestamp);
+        values.put(DatabaseContract.TrackingInfo.COL_LAT, Lat);
+        values.put(DatabaseContract.TrackingInfo.COL_LONG, Long);
+        values.put(DatabaseContract.TrackingInfo.COL_ACCURACY, accuracy);
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = sqlDb.insert(DatabaseContract.TrackingInfo.TABLE_NAME, null, values);
+
+        sqlDb.close();
+
+        return newRowId;
+    }
+
+    private void getLatLong (String mcc, String mnc, String lac, String cell_id, final String track_id, final long timestamp ) {
+//        HttpResponse<String> response = Unirest.post("https://ap1.unwiredlabs.com/v2/process.php")
+//                .body("{\"token\": \"99cc232e3b9fae\",\"radio\": \"gsm\",\"mcc\": "+info.get("mcc")+",\"mnc\": "+info.get("mnc")+",\"cells\": [{\"lac\": "+info.get("lac")+",\"cid\": "+info.get("cellid")+"}],\"address\": 1}")
+//                .asString();
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url ="https://ap1.unwiredlabs.com/v2/process.php";
+
+        // Request a string response from the provided URL.
+        try {
+            JSONObject jsonBody = new JSONObject("{\"token\": \"99cc232e3b9fae\",\"radio\": \"gsm\",\"mcc\": " + mcc + ",\"mnc\": " + mnc + ",\"cells\": [{\"lac\": " + lac + ",\"cid\": " + cell_id + "}],\"address\": 1}");
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url,jsonBody,
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+//                new Response.Listener<String>() {
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Toast.makeText(
+                                    getApplicationContext(),
+                                    "Response is: "+ response.toString(),
+                                    Toast.LENGTH_LONG
+                            ).show();
+                            try {
+                                if (response.getString("status").equals("ok")) {
+                                    saveLatLong(
+                                            track_id,
+                                            timestamp,
+                                            (float)response.getDouble("lat"),
+                                            (float)response.getDouble("lon"),
+                                            (float)response.getDouble("accuracy")
+                                    );
+                                } else {
+                                    Log.d("OpenCellID", "STATUS not OK in HTTP response");
+                                    Toast.makeText(getApplicationContext(), "No Lat-Long received", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException je) {
+                                Log.d("JSONObjectRequest", "JSON response is not alright");
+                                Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), "That didn't work!", Toast.LENGTH_SHORT).show();
+                }
+            });
+// Add the request to the RequestQueue.
+            queue.add(request);
+
+        } catch (JSONException je) {
+            Log.d("GetLatLong Function:::", "JSON Object is not well formed (throws JSONException)");
+            Toast.makeText(getApplicationContext(), "JSONException: JSONObject not well formed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void readMessages(){
 
         TextView log = (TextView) findViewById(R.id.logView);
@@ -219,21 +396,15 @@ public class SMSTrackingActivity extends AppCompatActivity
                 String str = "";
                 if (body.contains("cellid")){
                     Map<String, String> info = parseMessageBody(body);
-
-                    SQLiteDatabase sqlDb = dbHelper.getWritableDatabase();
-
-                    ContentValues values = new ContentValues();
-                    values.put(DatabaseContract.CellIdStream.COL_TRACK_ID, "dummy01");
-                    values.put(DatabaseContract.CellIdStream.COL_TIMESTAMP, Long.parseLong(cursor.getString(date), 10));
-                    values.put(DatabaseContract.CellIdStream.COL_MCC, info.get("mcc"));
-                    values.put(DatabaseContract.CellIdStream.COL_MNC, info.get("mnc"));
-                    values.put(DatabaseContract.CellIdStream.COL_LAC, info.get("lac"));
-                    values.put(DatabaseContract.CellIdStream.COL_CELL_ID, info.get("cellid"));
-                    // Insert the new row, returning the primary key value of the new row
-                    long newRowId = sqlDb.insert(DatabaseContract.CellIdStream.TABLE_NAME, null, values);
+                    long newRowId = saveCellId(
+                            "dummy01",
+                            cursor.getString(date),
+                            info.get("mcc"),
+                            info.get("mnc"),
+                            info.get("lac"),
+                            info.get("cellid")
+                    );
                     str += Long.toString(newRowId) + "th entry -> " + cursor.getString(date) + " :: " + info.toString();
-
-                    sqlDb.close();
                 }
                 logContent += str + "\n";
             }

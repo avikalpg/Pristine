@@ -25,5 +25,6 @@ public final class DatabaseContract {
         public static final String COL_TIMESTAMP = "TimeStamp";
         public static final String COL_LAT = "Lat";
         public static final String COL_LONG = "Long";
+        public static final String COL_ACCURACY = "accuracy";
     }
 }

@@ -231,8 +231,8 @@ public class SMSTrackingActivity extends AppCompatActivity
                 sortOrder                                 // The sort order
         );
 
-        if (cursor.getColumnCount() > 0) {
-            Log.d("saveCellId", "Data point already exists in the database:\n" +
+        if (cursor.getCount() > 1) {
+            Log.w("saveCellId", "Data point already exists in the database:\n" +
                     track_id + ", " + timestamp + ", " + mcc + ":" + mnc + ":" + lac + ":" + cell_id);
             return -1;
         }
@@ -274,10 +274,10 @@ public class SMSTrackingActivity extends AppCompatActivity
         String[] selectionArgs = { String.valueOf(timestamp), track_id, Lat.toString(), Long.toString() };
 
         String sortOrder =
-                DatabaseContract.CellIdStream.COL_TIMESTAMP + " DESC";
+                DatabaseContract.TrackingInfo.COL_TIMESTAMP + " DESC";
 
         Cursor cursor = sqlDb.query(
-                DatabaseContract.CellIdStream.TABLE_NAME, // The table to query
+                DatabaseContract.TrackingInfo.TABLE_NAME, // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
                 selectionArgs,                            // The values for the WHERE clause
@@ -286,8 +286,8 @@ public class SMSTrackingActivity extends AppCompatActivity
                 sortOrder                                 // The sort order
         );
 
-        if (cursor.getColumnCount() > 0) {
-            Log.d("saveCellId", "Lat-Long point already exists in database:\n" +
+        if (cursor.getCount() > 0) {
+            Log.w("saveCellId", "Lat-Long point already exists in database:\n" +
                     track_id + ", " + timestamp + ", " + Lat + ":" + Long );
             return -1;
         }
@@ -301,6 +301,7 @@ public class SMSTrackingActivity extends AppCompatActivity
         values.put(DatabaseContract.TrackingInfo.COL_ACCURACY, accuracy);
         // Insert the new row, returning the primary key value of the new row
         long newRowId = sqlDb.insert(DatabaseContract.TrackingInfo.TABLE_NAME, null, values);
+        Log.d("SaveLatLong", "Data point (" + track_id + ", " + timestamp + ", " + Lat + ", " + Long + ", " + accuracy + ") was added to the TrackingInfo table");
 
         sqlDb.close();
 
@@ -446,6 +447,33 @@ public class SMSTrackingActivity extends AppCompatActivity
             String lac = cursor2.getString(cursor2.getColumnIndexOrThrow(DatabaseContract.CellIdStream.COL_LAC));
             String cellid = cursor2.getString(cursor2.getColumnIndexOrThrow(DatabaseContract.CellIdStream.COL_CELL_ID));
             logContent += "time:" + Long.toString(ts) + " LAC:" + lac + " Cell ID:" + cellid + "\n";
+        }
+
+        // Define a projection that specifies which columns from the database you will actually use after this query.
+        projection = new String[]{
+                DatabaseContract.TrackingInfo._ID,
+                DatabaseContract.TrackingInfo.COL_TIMESTAMP,
+                DatabaseContract.TrackingInfo.COL_TRACK_ID,
+                DatabaseContract.TrackingInfo.COL_LAT,
+                DatabaseContract.TrackingInfo.COL_LONG
+        };
+
+        cursor2 = sqlDB.query(
+                DatabaseContract.TrackingInfo.TABLE_NAME, // The table to query
+                projection,                               // The columns to return
+                null,                                     // The columns for the WHERE clause
+                null,                                     // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                      // The sort order
+        );
+
+        logContent += "\n---------------------------------------\nOUTPUT FROM THE TABLE 2 READ:\n" + String.valueOf(cursor2.getCount()) + "\n";
+        while (cursor2.moveToNext()) {
+            long ts = cursor2.getLong(cursor2.getColumnIndexOrThrow(DatabaseContract.TrackingInfo.COL_TIMESTAMP));
+            String lat = cursor2.getString(cursor2.getColumnIndexOrThrow(DatabaseContract.TrackingInfo.COL_LAT));
+            String lon = cursor2.getString(cursor2.getColumnIndexOrThrow(DatabaseContract.TrackingInfo.COL_LONG));
+            logContent += "time:" + Long.toString(ts) + " LAT:" + lat + " Long:" + lon + "\n";
         }
 
         cursor2.close();

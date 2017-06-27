@@ -9,6 +9,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -41,16 +44,24 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class SMSTrackingActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     // Global Variables:
     TrackingDatabase dbHelper;
+
+    Handler handler;
+    TextView log;
+    Boolean keepTracking = false;
+    trackingThread bgThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +101,18 @@ public class SMSTrackingActivity extends AppCompatActivity
         }
 
         dbHelper = new TrackingDatabase(SMSTrackingActivity.this);
+
+        log = (TextView) findViewById(R.id.logView);
+        bgThread = new trackingThread();
+        bgThread.start();
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                String logContent = "" + log.getText();
+                logContent += "\nLoop running. Arg sent: " + msg.toString() + "\n";
+                log.setText(logContent);
+            }
+        };
 
         // TODO: Remove this code segment after testing reading inbox
         readMessages();
@@ -163,7 +186,7 @@ public class SMSTrackingActivity extends AppCompatActivity
     // App Functionality begins here
 
     public void startTracking(View view){
-        TextView log = (TextView) findViewById(R.id.logView);
+        log = (TextView) findViewById(R.id.logView);
         EditText phoneNumberView = (EditText) findViewById(R.id.editPhone);
         Button button = (Button) findViewById(R.id.startButton);
 
@@ -172,8 +195,9 @@ public class SMSTrackingActivity extends AppCompatActivity
             String phoneNumber = phoneNumberView.getText().toString();
             phoneNumberView.setFocusable(false);
             phoneNumberView.setFocusableInTouchMode(false);
+            keepTracking = true;
             button.setText(getResources().getString(R.string.stopButton));
-            String logContent = (String) log.getText();
+            String logContent = "" + log.getText();
             logContent += "Tracking Started - " + phoneNumberView.getText() + "\n";
             log.setText(logContent);
 
@@ -188,6 +212,7 @@ public class SMSTrackingActivity extends AppCompatActivity
             phoneNumberView.setFocusable(true);
             phoneNumberView.setFocusableInTouchMode(true);
             button.setText(getResources().getString(R.string.startButton));
+            keepTracking = false;
         }
     }
 
@@ -366,7 +391,7 @@ public class SMSTrackingActivity extends AppCompatActivity
 
     private void readMessages(){
 
-        TextView log = (TextView) findViewById(R.id.logView);
+        log = (TextView) findViewById(R.id.logView);
         String logContent = log.getText().toString();
 
         // making log scrollable
@@ -480,5 +505,58 @@ public class SMSTrackingActivity extends AppCompatActivity
         sqlDB.close();
 
         log.setText(logContent);
+    }
+
+    private class trackingThread extends Thread {
+
+        private trackingThread() {
+        }
+
+        @Override
+        public void run() {
+//            Looper.prepare();
+//            handler = new Handler() {
+//                public void handleMessage(Message msg) {
+//                    // process incoming messages here
+//                    log = (TextView) findViewById(R.id.logView);
+//                    String logContent = "" + log.getText();
+//
+//                    while (keepTracking) {
+//                        try {
+//                            Log.d(">>>>>>>>>", "About to fall asleep...");
+//                            Thread.sleep(100);
+//                        } catch (InterruptedException e) {
+//                            Log.w("Looping:: ", "Interrupt Exception while sleeping");
+//                            Toast.makeText(getApplicationContext(), "Sleep interrupted", Toast.LENGTH_SHORT).show();
+//                        }
+//                        Log.d(">>>>>>>>>", "keepTracking is true - repeating operation :)");
+//                        logContent += "...\n";
+//                        log.setText(logContent);
+//                    }
+//                }
+//            };
+//            Looper.loop();
+
+            while (true) {
+                try {
+                    Log.d(">>>>>>>>>", "About to fall asleep...");
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    Log.w("Looping:: ", "Interrupt Exception while sleeping");
+                    Toast.makeText(getApplicationContext(), "Sleep interrupted", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+                if (keepTracking) {
+
+                    Log.d(">>>>>>>>>", "keepTracking is true - repeating operation :)");
+                    Message msg = Message.obtain();
+                    msg.arg1 = 1;
+                    handler.sendMessage(msg);
+                }
+                else {
+                    Log.d(">>>>>>>>>", "keepTracking is false - no operation");
+                }
+            }
+        }
     }
 }

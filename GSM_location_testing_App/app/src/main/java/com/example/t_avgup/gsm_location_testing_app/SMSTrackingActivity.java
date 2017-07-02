@@ -192,25 +192,21 @@ public class SMSTrackingActivity extends AppCompatActivity
 
         Boolean state = ( button.getText().toString() == getResources().getString(R.string.startButton) );
         if (state) {
-            String phoneNumber = phoneNumberView.getText().toString();
+            final String phoneNumber = phoneNumberView.getText().toString();
+            bgThread.setPhoneNumber(phoneNumber);
             phoneNumberView.setFocusable(false);
             phoneNumberView.setFocusableInTouchMode(false);
-            keepTracking = true;
             button.setText(getResources().getString(R.string.stopButton));
             String logContent = "" + log.getText();
             logContent += "Tracking Started - " + phoneNumberView.getText() + "\n";
             log.setText(logContent);
+            keepTracking = true;
 
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(phoneNumber, null, "Test SMS message", null, null);
-            }
         }
         else {
             // TODO: add code to stop sending messages
-            phoneNumberView.setFocusable(true);
-            phoneNumberView.setFocusableInTouchMode(true);
+//            phoneNumberView.setFocusable(true);
+//            phoneNumberView.setFocusableInTouchMode(true);
             button.setText(getResources().getString(R.string.startButton));
             keepTracking = false;
         }
@@ -512,6 +508,16 @@ public class SMSTrackingActivity extends AppCompatActivity
         private trackingThread() {
         }
 
+        private trackingThread(String phone_number) {
+            setPhoneNumber(phone_number);
+        }
+
+        private String phoneNumber = "";
+
+        private void setPhoneNumber(String phone_number) {
+            phoneNumber = phone_number;
+        }
+
         @Override
         public void run() {
 //            Looper.prepare();
@@ -536,8 +542,86 @@ public class SMSTrackingActivity extends AppCompatActivity
 //                }
 //            };
 //            Looper.loop();
-
             while (true) {
+                if (keepTracking) {
+                    Log.d(">>>>>>>>>", "keepTracking is true - repeating operation :)");
+
+                    // TODO: This string condition has not yet been tested
+                    if (phoneNumber.isEmpty() || (phoneNumber == null)){
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                EditText phoneNumberView = (EditText) findViewById(R.id.editPhone);
+                                Button button = (Button) findViewById(R.id.startButton);
+
+                                Toast.makeText(SMSTrackingActivity.this, "Please enter a phone number to track", Toast.LENGTH_LONG).show();
+                                Log.w("Start Tracking-bgThread", "Attempting to start tracking without a phone number");
+                                phoneNumberView.setFocusable(true);
+                                phoneNumberView.setFocusableInTouchMode(true);
+                                button.setText(getResources().getString(R.string.startButton));
+                                keepTracking = false;
+                            }
+                        });
+                    } else {
+                        Long trackingStartTime = System.currentTimeMillis();
+
+                        Message msg = Message.obtain();
+                        msg.arg1 = 1;
+                        handler.sendMessage(msg);
+
+                        // Sending SMS to the tracker
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (ContextCompat.checkSelfPermission(SMSTrackingActivity.this,
+                                        Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+                                    SmsManager smsManager = SmsManager.getDefault();
+                                    smsManager.sendTextMessage(phoneNumber, null, "6660000", null, null);
+                                }
+                            }
+                        });
+
+                        // Checking for response SMSs from the tracking device
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ContentResolver contentResolver = getContentResolver();
+//        Cursor cursor = contentResolver.query(Uri.parse( "content://sms/inbox" ), null, null, null, null);
+
+                                // cursor
+                                Cursor cursor = contentResolver.query( Uri.parse("content://sms/inbox" ), null, null, null, null);
+                                int indexBody = cursor.getColumnIndex("body");
+                                int indexAddr = cursor.getColumnIndex("address");
+                                int date = cursor.getColumnIndex("date");
+
+                                if ( indexBody < 0 || !cursor.moveToFirst() ) return;
+                                do {
+                                    if (cursor.getString(indexAddr).contains(phoneNumber) ) {
+                                        String body = cursor.getString(indexBody);
+                                        if (body.contains("cellid")){
+                                            Map<String, String> info = parseMessageBody(body);
+                                            long newRowId = saveCellId(
+                                                    "session_01_" + phoneNumber,
+                                                    cursor.getString(date),
+                                                    info.get("mcc"),
+                                                    info.get("mnc"),
+                                                    info.get("lac"),
+                                                    info.get("cellid")
+                                            );
+                                            Toast.makeText(SMSTrackingActivity.this, "Row no." + Long.toString(newRowId) + " added", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                                while( cursor.moveToNext() );
+                                cursor.close();
+                            }
+                        });
+                    }
+                } else {
+                    Log.d(">>>>>>>>>", "keepTracking is false - no operation");
+                }
+                // Sleeping
                 try {
                     Log.d(">>>>>>>>>", "About to fall asleep...");
                     Thread.sleep(10000);
@@ -545,16 +629,6 @@ public class SMSTrackingActivity extends AppCompatActivity
                     Log.w("Looping:: ", "Interrupt Exception while sleeping");
                     Toast.makeText(getApplicationContext(), "Sleep interrupted", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
-                }
-                if (keepTracking) {
-
-                    Log.d(">>>>>>>>>", "keepTracking is true - repeating operation :)");
-                    Message msg = Message.obtain();
-                    msg.arg1 = 1;
-                    handler.sendMessage(msg);
-                }
-                else {
-                    Log.d(">>>>>>>>>", "keepTracking is false - no operation");
                 }
             }
         }

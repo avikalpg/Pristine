@@ -75,8 +75,14 @@ public class SMSTrackingActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Taking you to the map view", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                // In case we want to use Google Maps app in the phone
+//                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0.0,0.0?q=12.9656,77.5978(Track+Avikalp)"));
+//                startActivity(intent);
+
+                // Using the MapsActivity
+                startActivity(new Intent(SMSTrackingActivity.this, MapsActivity.class));
             }
         });
 

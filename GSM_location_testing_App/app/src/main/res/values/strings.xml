@@ -19,4 +19,5 @@
     <string name="trackingStatus_newItem">+</string>
     <string name="trackingStatus_error">ERROR</string>
     <string name="trackingID_newItem">Add item...</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

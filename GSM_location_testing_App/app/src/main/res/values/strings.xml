@@ -10,4 +10,14 @@
     <string name="SMS_tracking_intro">Press the start button to start sending messages to the tracking phone number</string>
     <string name="startButton">Start Tracking</string>
     <string name="stopButton">Stop Tracking</string>
+
+    <string name="title_activity_landing">LandingActivity</string>
+
+    <string name="trackingStatus_initial">Not Started</string>
+    <string name="trackingStatus_started">In Progress</string>
+    <string name="trackingStatus_completed">Completed</string>
+    <string name="trackingStatus_newItem">+</string>
+    <string name="trackingStatus_error">ERROR</string>
+    <string name="trackingID_newItem">Add item...</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

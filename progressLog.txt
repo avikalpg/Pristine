@@ -17,3 +17,15 @@ In a discussion with Sambhav Satija (on 8th May), we realised that we can do awa
 I and Apurv pitched Sambhav's ideas to Vivek and we have decided to go on with it. By today evening, I created an app which can list down the signal strengths along with the cell IDs and LACs of all the towers it can sense. The next step is to setup a server which can receive either SMS or HTTP packets from this app and track its location without using GPS.
 
 ---------------------------------------------------------------------
+
+* 18th June, 2017
+
+I came back from a tour to the USA, and during this time we received the GPS trackers we had ordered. These devices work using the GSM module and the manufacturers said that they provide the following functionalities:
+1. If you send it a message "6660000", it will send back its lattitude and longitude.
+2. If you send it a message "8880000", it will send back a google maps link to its position.
+3. You can track it real time using the app and/or the website provided with the product, given that internet works in the SIM card inserted in the device.
+Sadly none of these features work and the only useful thing that the tracker does is to send the cell-id (lac, mcc and mnc) of the (hopefully nearest) cell tower it is able to receive signals from. So we have sent emails to the manufacturers about this defect and also parallely started working on an Android app which can use whatever devices we have received to track garbage. Currently it is able to send and receive messages from the phone it is installed on.
+
+---------------------------------------------------------------------
+
+

@@ -24,20 +24,41 @@
         android:inputType="phone"
         android:ems="10"
         android:id="@+id/editPhone"
+        android:layout_marginTop="48dp"
         android:layout_below="@+id/introText"
-        android:layout_alignEnd="@+id/introText"
-        android:layout_marginTop="48dp" />
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:id="@+id/editAddr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/editPhone"
+        android:ems="18"
+        android:textSize="10dp"
+        android:inputType="textPostalAddress" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Tracking Phone:"
-        android:id="@+id/fieldNameTextView1"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Starting Address:"
+        android:id="@+id/textView_Addr"
+        android:layout_alignTop="@id/editAddr"
+        android:layout_alignBottom="@+id/editAddr"
         android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/editAddr"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/editPhone"
+        android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/editPhone"
-        android:layout_toStartOf="@+id/editPhone" />
+        android:layout_alignEnd="@id/textView_Addr"
+        android:text="Tracking Phone:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -45,7 +66,7 @@
         android:layout_height="wrap_content"
         android:text="@string/startButton"
         android:id="@+id/startButton"
-        android:layout_below="@+id/editPhone"
+        android:layout_below="@+id/editAddr"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:onClick="startTracking" />
